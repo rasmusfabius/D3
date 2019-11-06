@@ -38,7 +38,57 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
 
-  <link rel="stylesheet" href="D3.css">
+  <style>
+    .jumbotron {
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+      margin-bottom: 0;
+      background-color: #fff;
+    }
+
+    @media (min-width: 768px) {
+      .jumbotron {
+        padding-top: 6rem;
+        padding-bottom: 6rem;
+      }
+    }
+
+    .jumbotron p:last-child {
+      margin-bottom: 0;
+    }
+
+    .jumbotron-heading {
+      font-weight: 300;
+    }
+
+    .jumbotron .container {
+      max-width: 40rem;
+    }
+
+    footer {
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+    }
+
+    footer p {
+      margin-bottom: 0.25rem;
+    }
+
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -86,31 +136,90 @@
 
   <main role="main">
     <section class="jumbotron text-center">
-      <div class="container images-container">
+      <div class="container">
         <h1 class="jumbotron-heading">Album API example</h1>
         <p class="lead text-muted">
           This page will dynamically load pictures from the web, and display them in a cool way!
         </p>
         <p>
-          <a href="#" class="btn btn-primary my-2" onclick="loadImagesFirst()">Load Images</a>
-          <a href="#" class="btn btn-secondary my-2" onclick="loadImagesSecound()">Load Secondary Images</a>
+          <a href="#" class="btn btn-primary my-2" onclick="loadFromAPI('computers')">Load Images</a>
+          <a href="#" class="btn btn-secondary my-2" onclick="loadFromAPI('city')"> Load Secondary Images</a>
+          <!--<a href="#" class="btn btn-secondary my-2" onclick="search()"> Search</a> -->
+          <input type="text" class="form-input" id="searchText" placeholder="Search you city" />
+          <a href=" #" class="btn btn-secondary my-2" onclick="loadFromAPI(document.querySelector('#searchText').value)"> Search</a>
         </p>
       </div>
-
     </section>
-
-    <section class="jumbotron">
-      <div id="images-api"></div>
-    </section>
-
 
     <div class="album py-5 bg-light">
       <div class="container">
         <div class="row" id="pictureContainer">
 
+
+        </div>
+      </div>
+    </div>
   </main>
 
 
+
+  <script>
+    //search function
+    function search() {
+      var toSearch = document.querySelector("#searchText").value;
+      loadFromAPI(toSearch)
+    }
+
+
+
+
+    function loadFromAPI(whatToSearch) {   // We create a function called loadFromAPI which receives a parameter called whatTosearch
+      fetch("http://www.splashbase.co/api/v1/images/search?query=" + whatToSearch) // we fetch the information adding the "whaToSeach" in the QS
+        .then(res => res.json()) // We convert the response body into a JSON object
+        .then(pictures => { // We start working with this json object
+          console.log(pictures)
+          var row = document.querySelector("#pictureContainer"); //We clean up the previous content of the pirctureContainer. 
+          row.innerHTML = "";
+
+
+          pictures.images.forEach(img => {  // for each picture, we crate a new div
+            row.innerHTML += `<div class="col-md-4">
+              <div class="card mb-4 shadow-sm">
+            <img src="${img.url}" width=100%">
+                <div class="card-body">
+                  <p class="card-text">
+                    This is a wider card with supporting text below as a natural
+                    lead-in to additional content. This content is a little bit
+                    longer.
+                  </p>
+                  <div
+                    class="d-flex justify-content-between align-items-center" >
+                    <div class="btn-group">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                      >
+                        View
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                    <small class="text-muted">"${img.id}.</small>
+                  </div>
+                </div>
+              </div>
+            </div> 
+            
+                        `
+          });
+        })
+    }
+
+  </script>
 
 
   <footer class="text-muted">
@@ -124,18 +233,12 @@
       </p>
     </div>
   </footer>
-
-
-
-
-
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
     integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script src="D3.js"></script>
 </body>
 
 </html>
